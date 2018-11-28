@@ -1,4 +1,5 @@
 import core.YandexSpellerSoap;
+import enums.Message;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
@@ -7,6 +8,7 @@ import java.util.Arrays;
 import static enums.SimpleText.MOSCOW;
 import static enums.SimpleText.MOTHER_EN;
 import static enums.SimpleText.TEXT_EXAMPLE;
+import static org.hamcrest.Matchers.describedAs;
 
 public class TestYandexSpellerSOAP {
     @Test
@@ -17,8 +19,8 @@ public class TestYandexSpellerSOAP {
                 .callSOAP()
                 .then()
                 .assertThat()
-                .body(Matchers.stringContainsInOrder
-                        (Arrays.asList(MOTHER_EN.getIncorVersion(), MOTHER_EN.getCorVersion())));
+                .body(describedAs(Message.EXPECTED_CORRECT_WORD_ISNT_FOUND.toString(), Matchers.stringContainsInOrder
+                        (Arrays.asList(MOTHER_EN.getIncorVersion(), MOTHER_EN.getCorVersion()))));
     }
 
     @Test
@@ -29,7 +31,7 @@ public class TestYandexSpellerSOAP {
                 .callSOAP()
                 .then()
                 .assertThat()
-                .body(Matchers.containsString("code=\"1\""));
+                .body(describedAs(Message.INCORRECT_ERROR_CODE.toString(), Matchers.containsString("code=\"1\"")));
     }
 
     @Test
@@ -54,8 +56,8 @@ public class TestYandexSpellerSOAP {
                 .callSOAP()
                 .then()
                 .assertThat()
-                .body(Matchers.stringContainsInOrder
-                        (Arrays.asList(MOSCOW.getIncorVersion(), MOSCOW.getCorVersion())));
+                .body(describedAs(Message.EXPECTED_CORRECT_WORD_ISNT_FOUND.toString(), Matchers.stringContainsInOrder
+                        (Arrays.asList(MOSCOW.getIncorVersion(), MOSCOW.getCorVersion()))));
     }
 
     @Test
@@ -66,8 +68,8 @@ public class TestYandexSpellerSOAP {
                 .callSOAP()
                 .then()
                 .assertThat()
-                .body(Matchers.stringContainsInOrder
-                        (Arrays.asList(MOTHER_EN.getIncorVersion().toUpperCase(), MOTHER_EN.getCorVersion().toUpperCase())));
+                .body(describedAs(Message.EXPECTED_CORRECT_WORD_ISNT_FOUND.toString(), Matchers.stringContainsInOrder
+                        (Arrays.asList(MOTHER_EN.getIncorVersion().toUpperCase(), MOTHER_EN.getCorVersion().toUpperCase()))));
     }
 
 }
