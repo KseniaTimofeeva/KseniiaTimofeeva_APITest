@@ -49,6 +49,7 @@ public class TestYandexSpellerSOAP {
     }
 
     @Test
+    //feature doesn't work (test fails expectedly)
     public void checkWrongCapitalizationIsCorrected() {
         YandexSpellerSoap
                 .with()

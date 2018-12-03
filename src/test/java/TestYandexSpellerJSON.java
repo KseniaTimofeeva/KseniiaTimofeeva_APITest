@@ -1,5 +1,5 @@
 import core.YandexSpellerApi;
-import entity.YandexSpellerAnswer;
+import entity.YandexSpellerAnswerMultiText;
 import enums.Language;
 import enums.Message;
 import enums.Options;
@@ -37,55 +37,55 @@ public class TestYandexSpellerJSON {
 
     @Test
     public void checkRussianWordIsCorrected() {
-        List<List<YandexSpellerAnswer>> answers =
+        List<YandexSpellerAnswerMultiText> answers =
                 YandexSpellerApi.getYandexSpellerAnswers(
                         YandexSpellerApi.with()
                                 .language(Language.RU)
                                 .text(HOLIDAYS_RU.getIncorVersion(), HOLIDAYS_RU.getIncorVersion())
                                 .callApi());
         for (int i = 0; i < 2; i++) {
-            assertThat(answers.get(i).get(0).word, equalTo(HOLIDAYS_RU.getIncorVersion()));
-            assertThat(EXPECTED_CORRECT_WORD_ISNT_FOUND.toString(), answers.get(i).get(0).s.get(0), equalTo(HOLIDAYS_RU.getCorVersion()));
+            assertThat(answers.get(i).answerList.get(0).word, equalTo(HOLIDAYS_RU.getIncorVersion()));
+            assertThat(EXPECTED_CORRECT_WORD_ISNT_FOUND.toString(), answers.get(i).answerList.get(0).s.get(0), equalTo(HOLIDAYS_RU.getCorVersion()));
         }
     }
 
     @Test
     //feature doesn't work (test fails expectedly)
     public void checkCapitalizationIsCorrected() {
-        List<List<YandexSpellerAnswer>> answers =
+        List<YandexSpellerAnswerMultiText> answers =
                 YandexSpellerApi.getYandexSpellerAnswers(
                         YandexSpellerApi.with()
                                 .language(Language.EN)
                                 .text(MOSCOW.getIncorVersion())
                                 .callApi());
-        assertThat(EMPTY_ANSWER.toString(), answers.get(0).size(), greaterThan(0));
-        assertThat(INCORRECT_ERROR_CODE.toString(), answers.get(0).get(0).code, equalTo(ERROR_CAPITALIZATION));
-        assertThat(answers.get(0).get(0).word, equalTo(MOSCOW.getIncorVersion()));
-        assertThat(EXPECTED_CORRECT_WORD_ISNT_FOUND.toString(), answers.get(0).get(0).s.get(0), equalTo(MOSCOW.getCorVersion()));
+        assertThat(EMPTY_ANSWER.toString(), answers.get(0).answerList.size(), greaterThan(0));
+        assertThat(INCORRECT_ERROR_CODE.toString(), answers.get(0).answerList.get(0).code, equalTo(ERROR_CAPITALIZATION));
+        assertThat(answers.get(0).answerList.get(0).word, equalTo(MOSCOW.getIncorVersion()));
+        assertThat(EXPECTED_CORRECT_WORD_ISNT_FOUND.toString(), answers.get(0).answerList.get(0).s.get(0), equalTo(MOSCOW.getCorVersion()));
     }
 
     @Test
     public void checkOptionIgnoreCapitalization() {
-        List<List<YandexSpellerAnswer>> answers =
+        List<YandexSpellerAnswerMultiText> answers =
                 YandexSpellerApi.getYandexSpellerAnswers(
                         YandexSpellerApi.with()
                                 .language(Language.EN)
                                 .options(Options.IGNORE_CAPITALIZATION.getValue())
                                 .text(MOSCOW.getIncorVersion())
                                 .callApi());
-        assertThat(Message.OPTION_DOESNT_WORK.toString() + Options.IGNORE_CAPITALIZATION, answers.get(0), empty());
+        assertThat(Message.OPTION_DOESNT_WORK.toString() + Options.IGNORE_CAPITALIZATION, answers.get(0).answerList, empty());
     }
 
     @Test
     //feature works incorrect (test fails expectedly)
     public void checkWrongLanguage() {
-        List<List<YandexSpellerAnswer>> answers =
+        List<YandexSpellerAnswerMultiText> answers =
                 YandexSpellerApi.getYandexSpellerAnswers(
                         YandexSpellerApi.with()
                                 .language(Language.RU)
                                 .text(MOTHER_EN.getIncorVersion())
                                 .callApi());
-        assertThat(Message.LANGUAGE_ISNT_APPLIED.toString(), answers.get(0), empty());
+        assertThat(Message.LANGUAGE_ISNT_APPLIED.toString(), answers.get(0).answerList, empty());
     }
 
 

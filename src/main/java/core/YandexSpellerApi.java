@@ -1,8 +1,12 @@
 package core;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import entity.YandexSpellerAnswer;
+import entity.YandexSpellerAnswerMultiText;
 import enums.Language;
 import io.restassured.RestAssured;
 import io.restassured.builder.ResponseSpecBuilder;
@@ -70,9 +74,31 @@ public class YandexSpellerApi {
     }
 
     //get ready Speller answers list form api response
-    public static List<List<YandexSpellerAnswer>> getYandexSpellerAnswers(Response response) {
-        return new Gson().fromJson(response.asString().trim(), new TypeToken<List<List<YandexSpellerAnswer>>>() {
-        }.getType());
+    public static List<YandexSpellerAnswerMultiText> getYandexSpellerAnswers(Response response) {
+//        return new Gson().fromJson(response.asString().trim(), new TypeToken<List<List<YandexSpellerAnswer>>>() {
+//        }.getType());
+
+        JsonParser parser = new JsonParser();
+        Gson gson = new Gson();
+
+        JsonArray answerArray = parser.parse(response.asString().trim()).getAsJsonArray();
+
+        List<YandexSpellerAnswerMultiText> result = new ArrayList<>();
+
+        for (JsonElement array : answerArray) {
+            YandexSpellerAnswerMultiText list = new YandexSpellerAnswerMultiText();
+
+            if (array instanceof JsonArray) {
+                for (JsonElement jsonElement : (JsonArray) array) {
+                    list.answerList.add(gson.fromJson(jsonElement, new TypeToken<YandexSpellerAnswer>() {
+                    }.getType()));
+
+                }
+                result.add(list);
+            }
+        }
+        return result;
+
     }
 
     //    set base request and response specifications to use in tests
