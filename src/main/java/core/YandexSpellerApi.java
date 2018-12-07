@@ -17,7 +17,6 @@ import org.apache.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,7 +32,8 @@ public class YandexSpellerApi {
 
     }
 
-    private HashMap<String, List<String>> params = new HashMap<>();
+    private HashMap<String, List<String>> textParams = new HashMap<>();
+    private HashMap<String, String> params = new HashMap<>();
 
     public static class ApiBuilder {
 
@@ -44,25 +44,28 @@ public class YandexSpellerApi {
         }
 
         public ApiBuilder text(String... texts) {
-            List<String> textValues = new ArrayList<>();
-            textValues.addAll(Arrays.asList(texts));
-            spellerApi.params.put(PARAM_TEXT, textValues);
+            spellerApi.textParams.put(PARAM_TEXT, Arrays.asList(texts));
             return this;
         }
 
-        public ApiBuilder options(String option) {
-            spellerApi.params.put(PARAM_OPTIONS, Collections.singletonList(option));
+        public ApiBuilder options(int... options) {
+            int optionSum = 0;
+            for (int optn : options) {
+                optionSum += optn;
+            }
+            spellerApi.params.put(PARAM_OPTIONS, String.valueOf(optionSum));
             return this;
         }
 
         public ApiBuilder language(Language language) {
-            spellerApi.params.put(PARAM_LANG, Collections.singletonList(language.langCode()));
+            spellerApi.params.put(PARAM_LANG, language.langCode());
             return this;
         }
 
         public Response callApi() {
             return RestAssured.with()
                     .queryParams(spellerApi.params)
+                    .queryParams(spellerApi.textParams)
                     .log().all()
                     .get(YANDEX_SPELLER_API_URI).prettyPeek();
         }
@@ -75,9 +78,6 @@ public class YandexSpellerApi {
 
     //get ready Speller answers list form api response
     public static List<YandexSpellerAnswerMultiText> getYandexSpellerAnswers(Response response) {
-//        return new Gson().fromJson(response.asString().trim(), new TypeToken<List<List<YandexSpellerAnswer>>>() {
-//        }.getType());
-
         JsonParser parser = new JsonParser();
         Gson gson = new Gson();
 

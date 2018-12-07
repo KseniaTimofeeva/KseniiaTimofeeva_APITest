@@ -2,18 +2,18 @@ package enums;
 
 public enum Options {
 
-    IGNORE_DIGITS("2"),
-    IGNORE_URLS("4"),
-    FIND_REPEAT_WORDS("8"),
-    IGNORE_CAPITALIZATION("512");
+    IGNORE_DIGITS(2),
+    IGNORE_URLS(4),
+    FIND_REPEAT_WORDS(8),
+    IGNORE_CAPITALIZATION(512);
 
-    private String value;
+    private int value;
 
-    Options(String value) {
+    Options(int value) {
         this.value = value;
     }
 
-    public String getValue() {
+    public int getValue() {
         return value;
     }
 }
